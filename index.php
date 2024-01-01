@@ -1,0 +1,100 @@
+
+<head>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+</head>
+
+<div class="container" style="margin-top: 3%">
+	<br><br>
+	<div class="row">
+		<div class="col-md-2"></div>
+		<div class="col-md-8">
+			<form action="" method="post">
+				<div class="form-group">
+					<label>Domain Name (example.com)</label>
+					<textarea name="domain" placeholder="Enter Domain List	" class="form-control domain"></textarea>
+				</div>
+				<button type="button" name="btn" class="btn btn-primary">Search Domain</button>
+			</form>
+		</div>
+		<div class="col-md-2"></div>
+	</div>
+
+<div class="row">
+
+		<div class="col-md-6">
+			Available
+			<textarea class="available"  rows="10" style="width: 100%;" disabled></textarea>
+		</div>
+		<div class="col-md-6">
+			Not Available
+			<textarea class="notavailable"  rows="10" style="width: 100%;" disabled></textarea>
+		</div>
+
+</div>
+
+
+</div>
+
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('.btn').click(function(){
+			var delay = 300
+			domain = $('.domain').val().split('\n');
+
+			var i = 0; 
+
+		function myLoop() {
+
+			setTimeout(function() {				
+				domainChecker(i);
+				i++;
+				if (i < domain.length) 
+					{
+						myLoop(); 
+					}
+			}, delay)
+		}
+
+			myLoop();
+
+
+		function domainChecker(i){
+			domain1 = domain[i]
+			$.ajax	(
+						{
+							type:'POST',
+							url:'ajax.php',
+							dataType:"JSON",
+							data:{btn:'btn',domain:domain1},
+							success:function(response){
+								if(response['status']==1)
+								{
+									$('.available').append(response['domain']+"\n");
+								}
+								 else
+								{
+									$('.notavailable').append(response['domain']+"\n");
+								}
+
+								if(domain.length==(i+1))
+									 {
+									 	alert("All "+domain.length+' Checked')
+									 }
+							},
+							fail: function(response)
+								{
+									alert("fail");
+								}
+						}
+					)
+
+		}
+
+
+			});
+	});
+</script>
+
